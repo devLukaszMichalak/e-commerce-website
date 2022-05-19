@@ -1,5 +1,6 @@
 export class Product {
-
+    
+    id: string;
     public sku: string;
     name: string;
     description: string;
