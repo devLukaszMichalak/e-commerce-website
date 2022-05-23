@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormGroupName } from '@angular/forms';
+import { Country } from 'src/app/common/country';
+import { State } from 'src/app/common/state';
 import { CheckoutFormService } from 'src/app/services/checkout-form.service';
 
 @Component({
@@ -18,6 +20,11 @@ export class CheckoutComponent implements OnInit {
   creditCardYears: number[] = [];
   creditCardMonths: number[] = [];
 
+  countries: Country[] = [];
+
+  shippingAdressStates: State[] = [];
+  billingAdressStates: State[] = [];
+
 
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
@@ -29,14 +36,14 @@ export class CheckoutComponent implements OnInit {
       shippingAdress: this.formBuilder.group({
         street: [" "],
         city: [" "],
-        county: [" "],
+        country: [" "],
         state: [" "],
         zipCode: [" "]
       }),
       billingAdress: this.formBuilder.group({
         street: [" "],
         city: [" "],
-        county: [" "],
+        country: [" "],
         state: [" "],
         zipCode: [" "]
       }),
@@ -61,6 +68,11 @@ export class CheckoutComponent implements OnInit {
       data => this.creditCardYears = data
     )
 
+    //populate countries
+    this.checkoutFormService.getCounntries().subscribe(
+      data => this.countries = data
+    )
+
   }
 
   onSubmit() {
@@ -71,11 +83,62 @@ export class CheckoutComponent implements OnInit {
   copyShippingAdressToBillingAdress(event) {
     if (event.target.checked) {
       this.checkoutFormGroup.controls['billingAdress'].setValue(this.checkoutFormGroup.controls['shippingAdress'].value);
+      //to populate states when copying
+      this.billingAdressStates = this.shippingAdressStates;
 
     } else {
       this.checkoutFormGroup.controls['billingAdress'].reset();
+      this.billingAdressStates = [];
+
     }
 
+  }
+
+  handleMonthsAndYears() {
+
+    const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
+
+    const currentYear: number = new Date().getFullYear();
+    const selectedYear: number = Number(creditCardFormGroup.value.expirationYear);
+
+    let startMonth: number;
+
+    if (currentYear === selectedYear) {
+      startMonth = new Date().getMonth() + 1;
+    }
+    else {
+      startMonth = 1;
+    }
+
+    this.checkoutFormService.getCreditCardMonths(startMonth).subscribe(
+      data => {
+        console.log("Retrieved credit card months: " + JSON.stringify(data));
+        this.creditCardMonths = data;
+      }
+
+    );
+  }
+
+  getStates(formGroupName: string) {
+    const FormGroup = this.checkoutFormGroup.get(formGroupName);
+
+    const countryCode = FormGroup.value.country.code;
+    const countryName = FormGroup.value.country.name;
+
+    console.log(`${formGroupName} country code: ${countryCode}`);
+    console.log(`${formGroupName} country name: ${countryName}`);
+
+    this.checkoutFormService.getStates(countryCode).subscribe(
+      data => {
+        if (formGroupName === 'shippingAdress') {
+          this.shippingAdressStates = data;
+        }
+        else {
+          this.billingAdressStates = data;
+        }
+        FormGroup.get('state').setValue(data[0]);
+      }
+    )
   }
 
 }
