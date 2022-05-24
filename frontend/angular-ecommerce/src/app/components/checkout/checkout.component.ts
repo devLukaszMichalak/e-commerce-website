@@ -52,12 +52,12 @@ export class CheckoutComponent implements OnInit {
         zipCode: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces])
       }),
       creditCard: this.formBuilder.group({
-        cardType: [" "],
-        nameOnCard: [" "],
-        cardNumber: [" "],
-        securityCode: [" "],
-        expirationYear: [" "],
-        expirationMonth: [" "]
+        cardType: new FormControl('',Validators.required),
+        nameOnCard: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
+        cardNumber: new FormControl('',[Validators.required, Validators.pattern('[0-9]{16}')]),
+        securityCode: new FormControl('',[Validators.required, Validators.pattern('[0-9]{3}')]),
+        expirationYear: new FormControl('',Validators.required),
+        expirationMonth: new FormControl('',Validators.required)
       })
     })
 
@@ -102,6 +102,15 @@ export class CheckoutComponent implements OnInit {
   get billingAdressCountry(){return this.checkoutFormGroup.get('billingAdress.country');}
   get billingAdressState(){return this.checkoutFormGroup.get('billingAdress.state');}
   get billingAdressZipCode(){return this.checkoutFormGroup.get('billingAdress.zipCode');}
+
+  get creditCardType(){return this.checkoutFormGroup.get('creditCard.cardType');}
+  get creditCardNameOnCard(){return this.checkoutFormGroup.get('creditCard.nameOnCard');}
+  get creditCardNumber(){return this.checkoutFormGroup.get('creditCard.cardNumber');}
+  get creditCardSecurityCode(){return this.checkoutFormGroup.get('creditCard.securityCode');}
+  get creditCardExpirationYear(){return this.checkoutFormGroup.get('creditCard.expirationYear');}
+  get creditCardExpirationMonth(){return this.checkoutFormGroup.get('creditCard.expirationMonth');}
+
+
 
   
 
