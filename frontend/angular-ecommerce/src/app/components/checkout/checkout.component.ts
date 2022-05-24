@@ -15,6 +15,7 @@ export class CheckoutComponent implements OnInit {
   checkoutFormGroup: FormGroup;
   totalPrice: number = 0;
   totalQuantity: number = 0;
+  
 
   constructor(private formBuilder: FormBuilder, private checkoutFormService: CheckoutFormService) { }
 
@@ -37,18 +38,18 @@ export class CheckoutComponent implements OnInit {
         )])
       }),
       shippingAdress: this.formBuilder.group({
-        street: [" "],
-        city: [" "],
-        country: [" "],
-        state: [" "],
-        zipCode: [" "]
+        street: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
+        city: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
+        country: new FormControl('',Validators.required),
+        state: new FormControl('',Validators.required),
+        zipCode: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces])
       }),
       billingAdress: this.formBuilder.group({
-        street: [" "],
-        city: [" "],
-        country: [" "],
-        state: [" "],
-        zipCode: [" "]
+        street: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
+        city: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
+        country: new FormControl('',Validators.required),
+        state: new FormControl('',Validators.required),
+        zipCode: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces])
       }),
       creditCard: this.formBuilder.group({
         cardType: [" "],
@@ -89,6 +90,20 @@ export class CheckoutComponent implements OnInit {
   get firstName(){return this.checkoutFormGroup.get('customer.firstName');}
   get lastName(){return this.checkoutFormGroup.get('customer.lastName');}
   get email(){return this.checkoutFormGroup.get('customer.email');}
+
+  get shippingAdressStreet(){return this.checkoutFormGroup.get('shippingAdress.street');}
+  get shippingAdressCity(){return this.checkoutFormGroup.get('shippingAdress.city');}
+  get shippingAdressCountry(){return this.checkoutFormGroup.get('shippingAdress.country');}
+  get shippingAdressState(){return this.checkoutFormGroup.get('shippingAdress.state');}
+  get shippingAdressZipCode(){return this.checkoutFormGroup.get('shippingAdress.zipCode');}
+
+  get billingAdressStreet(){return this.checkoutFormGroup.get('billingAdress.street');}
+  get billingAdressCity(){return this.checkoutFormGroup.get('billingAdress.city');}
+  get billingAdressCountry(){return this.checkoutFormGroup.get('billingAdress.country');}
+  get billingAdressState(){return this.checkoutFormGroup.get('billingAdress.state');}
+  get billingAdressZipCode(){return this.checkoutFormGroup.get('billingAdress.zipCode');}
+
+  
 
   copyShippingAdressToBillingAdress(event) {
     if (event.target.checked) {
