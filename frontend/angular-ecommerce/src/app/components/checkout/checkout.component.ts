@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, FormGroupName, Validators } from '
 import { Country } from 'src/app/common/country';
 import { State } from 'src/app/common/state';
 import { CheckoutFormService } from 'src/app/services/checkout-form.service';
+import { CheckoutFormValidators } from 'src/app/validators/checkout-form-validators';
 
 @Component({
   selector: 'app-checkout',
@@ -29,9 +30,9 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        firstName: new FormControl('',[Validators.required,Validators.minLength(2)]),
-        lastName: new FormControl('',[Validators.required,Validators.minLength(2)]),
-        email: new FormControl('',[Validators.required,Validators.pattern(
+        firstName: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
+        lastName: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
+        email: new FormControl('',[Validators.required, Validators.pattern(
           '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,7}$'
         )])
       }),
