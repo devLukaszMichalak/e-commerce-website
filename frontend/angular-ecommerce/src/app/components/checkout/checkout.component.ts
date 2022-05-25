@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupName, Validators } from '@angular/forms';
 import { Country } from 'src/app/common/country';
 import { State } from 'src/app/common/state';
+import { CartService } from 'src/app/services/cart.service';
 import { CheckoutFormService } from 'src/app/services/checkout-form.service';
 import { CheckoutFormValidators } from 'src/app/validators/checkout-form-validators';
 
@@ -17,7 +18,8 @@ export class CheckoutComponent implements OnInit {
   totalQuantity: number = 0;
   
 
-  constructor(private formBuilder: FormBuilder, private checkoutFormService: CheckoutFormService) { }
+  constructor(private formBuilder: FormBuilder, private checkoutFormService: CheckoutFormService,
+              private cartServicee: CartService) { }
 
   creditCardYears: number[] = [];
   creditCardMonths: number[] = [];
@@ -29,6 +31,9 @@ export class CheckoutComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    this.reviewCartDetails();
+
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         firstName: new FormControl('',[Validators.required, Validators.minLength(2), CheckoutFormValidators.notOnlyWhiteSpaces]),
@@ -77,6 +82,16 @@ export class CheckoutComponent implements OnInit {
       data => this.countries = data
     )
 
+  }
+  reviewCartDetails() {
+    this.cartServicee.totalQuantity.subscribe(
+      data => this.totalQuantity = data
+    )
+
+    this.cartServicee.totalPrice.subscribe(
+      data => this.totalPrice = data
+    )
+    
   }
 
   onSubmit() {
